@@ -1,8 +1,8 @@
 import logging
 import os
+from datetime import datetime as dt
 import azure.functions as func
 import azure.common
-from datetime import datetime as dt
 from azure.cosmosdb.table.tableservice import TableService
 
 STORAGE_ACC_NAME = os.environ['STORAGE_ACC_NAME']
@@ -42,12 +42,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info(f'{new_row}')
 
 
-    # insert a record and return 200 if success, otherwise return err and 
+    # insert a record and return 200 if success, otherwise return err and
     try:
         table_service.insert_entity(TABLE_NAME, new_row)
         return func.HttpResponse(
-             "Entry Created",
-             status_code=200
+            "Entry Created",
+            status_code=200
         )
     except azure.common.AzureConflictHttpError as err:
         # https://docs.microsoft.com/en-us/rest/api/storageservices/blob-service-error-codes
@@ -60,12 +60,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(
             f"Something went wrong :(",
             status_code=400
-        ) 
+        )
 
 
 def check_for_params(params: dict) -> bool:
     ''' checks if params were provided to the request '''
-    
+
     partition_key = params.get('partitionKey')
     user_name = params.get('userName')
     score = params.get('score')
@@ -74,4 +74,3 @@ def check_for_params(params: dict) -> bool:
         return False
     else:
         return True
-
